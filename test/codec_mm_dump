@@ -1,0 +1,15 @@
+codec mem info:
+        total codec mem size:257 MB
+        alloced size= 11 MB
+        max alloced: 71 MB
+        CMA:7,RES:63,TVP:0,SYS:0 MB
+        [3]RES size:65 MB,alloced:63 MB free:1 MB
+        [4]CMA size:192 MB:alloced: 7 MB,free:184 MB
+        owner: streambuf:no,addr=0000000036700000,s=15728640,from=3,cnt=1
+        owner: vdec_prealloc:no,addr=0000000037600000,s=50331648,from=3,cnt=1
+        owner: codec_264:no,addr=0000000027c00000,s=3145728,from=4,cnt=1
+        owner: codec_264:no,addr=0000000027f00000,s=3145728,from=4,cnt=1
+        owner: fetchbuf:no,addr=000000003a600000,s=655360,from=3,cnt=1
+        owner: streambuf:no,addr=0000000028200000,s=1572864,from=4,cnt=1
+        owner: tb_detect:no,addr=000000003a6a0000,s=131072,from=3,cnt=1
+

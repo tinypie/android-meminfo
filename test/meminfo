@@ -1,0 +1,36 @@
+shell@p200:/ # cat /proc/meminfo                                               
+MemTotal:         831400 kB
+MemFree:          209564 kB
+MemAvailable:     509960 kB
+Buffers:           22832 kB
+Cached:           322388 kB
+SwapCached:            0 kB
+Active:           192284 kB
+Inactive:         264204 kB
+Active(anon):     111280 kB
+Inactive(anon):       56 kB
+Active(file):      81004 kB
+Inactive(file):   264148 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:        511996 kB
+SwapFree:         511996 kB
+Dirty:                 0 kB
+Writeback:             0 kB
+AnonPages:        111268 kB
+Mapped:            78516 kB
+Shmem:                96 kB
+Slab:              29948 kB
+SReclaimable:      10660 kB
+SUnreclaim:        19288 kB
+KernelStack:        8080 kB
+PageTables:         8172 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:      927696 kB
+Committed_AS:   24561388 kB
+VmallocTotal:    1048576 kB
+VmallocUsed:       80872 kB
+VmallocChunk:     905044 kB
+

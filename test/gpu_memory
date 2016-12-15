@@ -1,0 +1,8 @@
+  Name (:bytes)              pid         mali_mem    max_mali_mem     external_mem     ump_mem     dma_mem   
+==============================================================================================================
+  RenderThread               17106       2621440     2621440          0                0           10289152  
+  RenderThread               17001       35794944    36581376         0                0           41369600  
+  surfaceflinger             1583        4440064     7839744          49766400         0           43569152  
+
+Mali mem usage: 42856448
+Mali mem limit: 1073741824

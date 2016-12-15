@@ -1,0 +1,18 @@
+codec scattered memory info:
+        total size:0M, 0 Bytes,pages:0
+        alloced size:0M, 1024 Bypes,pages:0
+        max alloced:0 M | 0 pages
+        scatter cached:2 M |0 pages
+        alloc from sys sc cnt:0
+        alloc from sys pages cnt:0 pages
+        alloc from sys max pages cnt:0 pages
+        scatter_task_run:0
+        one_page_cnt:0
+        catters cnt:0
+        slot cnt:0
+        cma alloc block size:1024
+        sys alloc block size:128
+        delay_free_on:0
+        delay_free_on time:0 jiffies
+        current time:4295057291
+

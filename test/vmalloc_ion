@@ -1,0 +1,24 @@
+          client              pid             size
+----------------------------------------------------
+  surfaceflinger             3680         24883200
+----------------------------------------------------
+orphaned allocations (info is from last known client):
+  surfaceflinger             3680          4669440 0 1
+----------------------------------------------------
+  total orphaned          4669440
+          total          29552640
+   deferred free                0
+----------------------------------------------------
+0 order 8 highmem pages in pool = 0 total
+21 order 8 lowmem pages in pool = 22020096 total
+0 order 4 highmem pages in pool = 0 total
+42 order 4 lowmem pages in pool = 2752512 total
+0 order 3 highmem pages in pool = 0 total
+3 order 3 lowmem pages in pool = 98304 total
+0 order 2 highmem pages in pool = 0 total
+0 order 2 lowmem pages in pool = 0 total
+0 order 1 highmem pages in pool = 0 total
+0 order 1 lowmem pages in pool = 0 total
+0 order 0 highmem pages in pool = 0 total
+3 order 0 lowmem pages in pool = 12288 total
+
