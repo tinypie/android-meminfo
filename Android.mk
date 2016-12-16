@@ -3,8 +3,8 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES:=   \
     main.c   \
-	getpss.c   \
-	hash.c     \
+    getpss.c   \
+    hash.c     \
     getmem.c   \
     error.c
 

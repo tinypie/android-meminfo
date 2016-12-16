@@ -290,17 +290,17 @@ int print_meminfo(struct mem_item *mem)
     pss = mem[MEMINFO_ANONPAGES].num + mem[MEMINFO_MAPPED].num;
 
     printf("\nmemory information in kernel's view\n");
-    printf("                        %15s%7d\n", mem[MEMINFO_TOTAL].name, total);
+    printf("                        %15s%7d KB\n", mem[MEMINFO_TOTAL].name, total);
 
-    printf("%20s%7d\n", mem[MEMINFO_ANONPAGES].name, mem[MEMINFO_ANONPAGES].num);
-    printf("%20s%7d\n", mem[MEMINFO_MAPPED].name, mem[MEMINFO_MAPPED].num);
-    printf("                        %20s%7d\n", "PSS", pss);
+    printf("%20s%7d KB\n", mem[MEMINFO_ANONPAGES].name, mem[MEMINFO_ANONPAGES].num);
+    printf("%20s%7d KB\n", mem[MEMINFO_MAPPED].name, mem[MEMINFO_MAPPED].num);
+    printf("                        %20s%7d KB\n", "PSS:", pss);
 
     kernel_cached = mem[MEMINFO_CACHED].num - mem[MEMINFO_MAPPED].num;
     free_ram = kernel_cached + mem[MEMINFO_FREE].num;
-    printf("%20s%7d\n", mem[MEMINFO_FREE].name, mem[MEMINFO_FREE].num);
-    printf("%20s%7d\n", "Kernel cached", kernel_cached);
-    printf("                        %20s%7d\n", "Free Ram", free_ram);
+    printf("%20s%7d KB\n", mem[MEMINFO_FREE].name, mem[MEMINFO_FREE].num);
+    printf("%20s%7d KB\n", "Kernel cached:", kernel_cached);
+    printf("                        %20s%7d KB\n", "Free Ram:", free_ram);
 
     ion = mem[MEMINFO_ION].num + mem[MEMINFO_ION_BUFFER].num;
 
@@ -316,20 +316,20 @@ int print_meminfo(struct mem_item *mem)
         + mem[MEMINFO_CODEC_USED].num;
 
     unknown = total - pss - free_ram - kernel;
-    printf("%20s%7d\n", mem[MEMINFO_BUFFERS].name, mem[MEMINFO_BUFFERS].num);
-    printf("%20s%7d\n", mem[MEMINFO_SLAB].name, mem[MEMINFO_SLAB].num);
-    printf("%20s%7d\n", mem[MEMINFO_PAGE_TABLES].name, mem[MEMINFO_PAGE_TABLES].num);
-    printf("%20s%7d\n", mem[MEMINFO_KERNEL_STACK].name, mem[MEMINFO_KERNEL_STACK].num);
-    printf("%20s%7d\n", mem[MEMINFO_SHMEM].name, mem[MEMINFO_SHMEM].num);
-    printf("%20s%7d\n", "vmalloc", mem[MEMINFO_VMALLOC_INFO].num);
-    printf("%20s%7d\n", "zram", mem[MEMINFO_ZRAM_TOTAL].num);
-    printf("%20s%7d (graphic:%d + buffer:%d)\n", "ion", ion,
+    printf("%20s%7d KB\n", mem[MEMINFO_BUFFERS].name, mem[MEMINFO_BUFFERS].num);
+    printf("%20s%7d KB\n", mem[MEMINFO_SLAB].name, mem[MEMINFO_SLAB].num);
+    printf("%20s%7d KB\n", mem[MEMINFO_PAGE_TABLES].name, mem[MEMINFO_PAGE_TABLES].num);
+    printf("%20s%7d KB\n", mem[MEMINFO_KERNEL_STACK].name, mem[MEMINFO_KERNEL_STACK].num);
+    printf("%20s%7d KB\n", mem[MEMINFO_SHMEM].name, mem[MEMINFO_SHMEM].num);
+    printf("%20s%7d KB\n", "vmalloc:", mem[MEMINFO_VMALLOC_INFO].num);
+    printf("%20s%7d KB\n", "zram:", mem[MEMINFO_ZRAM_TOTAL].num);
+    printf("%20s%7d KB (graphic:%d + buffer:%d)\n", "ion:", ion,
             mem[MEMINFO_ION].num, mem[MEMINFO_ION_BUFFER].num);
-    printf("%20s%7d\n", "gpu", mem[MEMINFO_GPU_USED].num);
-    printf("%20s%7d\n", "codecMem", mem[MEMINFO_CODEC_USED].num);
-    printf("%20s%7d\n", "unknown", unknown);
+    printf("%20s%7d KB\n", "gpu:", mem[MEMINFO_GPU_USED].num);
+    printf("%20s%7d KB\n", "codecMem:", mem[MEMINFO_CODEC_USED].num);
+    printf("%20s%7d KB\n", "unknown:", unknown);
 
-    printf("                        %20s%7d\n", "kernel used ", kernel+unknown);
+    printf("                        %20s%7d KB\n", "kernel used:", kernel+unknown);
 
     return 0;
 }
