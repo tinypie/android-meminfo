@@ -51,9 +51,9 @@ static int leak_check_process(struct hash *htable)
                 hit++;
             tmp = tmp->next;
         }
-        if (count <= 1) break;
+        if (count <= 3) break;
 
-        if (hit/count > 0.6) {
+        if (hit/count > 0.8) {
             if (i >= size) break;
             sample[i] = 1;
         }
@@ -68,12 +68,12 @@ static int leak_check_process(struct hash *htable)
             hit++;
     free(sample);
 
-    if (hit/size > 0.6)
+    if (hit/size > 0.8)
         ret++;
     return ret;
 }
 
-static void print_leak(struct hash *hit)
+static void print_hash(struct hash *hit)
 {
     struct proc *head;
     int i = 0;
@@ -87,7 +87,7 @@ static void print_leak(struct hash *hit)
             hit->init_pss, hit->min_pss, hit->max_pss, hit->count);
 
     while(head) {
-        if ((++i)%10) printf("\n");
+        if ((++i)%10 == 0) printf("\n");
         printf("\t%d", head->pss);
         head = head->next;
     }
@@ -187,7 +187,7 @@ int hash_insert_item(struct proc_info *item)
             struct proc *tmp, *pn = *head;
             int leak = leak_check_process(hit);
             if (leak == 1)
-                print_leak(hit);
+                print_hash(hit);
     
             while(pn) {
                 tmp = pn;
@@ -223,6 +223,50 @@ int hash_insert(struct meminfo *minfo)
     return 0;
 }
 
+static void shrink_link(struct hash *h)
+{
+    int size;
+    struct proc *pnext, *tmp;
+    if (h == NULL)
+        return;
+    if (h->head == NULL)
+        return;
+
+    pnext = h->head;
+    size = list_size(pnext);
+    if (size < SHRINK_SIZE)
+        return;
+
+    while(pnext) {
+        tmp = pnext;
+        pnext = pnext->next;
+        free(tmp);
+    }
+    h->head = NULL;
+
+}
+
+void hash_shrink()
+{
+    int i;
+    struct hash *hnext;
+
+    for (i = 0; i < HASH_SIZE; i++) {
+        if (htable[i].cmdline == NULL)
+            continue;
+        if (htable[i].head == NULL)
+            continue;
+
+        shrink_link(&htable[i]);
+
+        hnext = htable[i].next;
+        while(hnext) {
+            shrink_link(hnext);
+            hnext = hnext->next;
+        }
+    }
+}
+
 int detect_leak()
 {
     int i;
@@ -235,22 +279,17 @@ int detect_leak()
             continue;
 
         if (leak_check_process(&htable[i]) == 1)
-                print_leak(&htable[i]);
+                print_hash(&htable[i]);
 
         hnext = htable[i].next;
         while(hnext) {
             if (leak_check_process(hnext) == 1)
-                print_leak(hnext);
+                print_hash(hnext);
             hnext = hnext->next;
         }
     }
 
     return 0;
-}
-
-void hash_shrink()
-{
-
 }
 
 static void list_clear(struct proc *head)

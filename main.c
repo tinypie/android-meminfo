@@ -155,6 +155,7 @@ int main(int argc, char *argv[])
         err_quit("can't catch SIGINT signal.\n");
     }
 
+    count = 0;
     do {
         if (pid != -1 || procn != NULL) {
             struct proc_info procs;
@@ -172,8 +173,10 @@ int main(int argc, char *argv[])
             }
 
             print_pss(&procs);
-            if (leak)
+            if (leak) {
                 hash_insert_item(&procs);
+                count++;
+            }
         } else {
             struct meminfo *minfo;
             minfo = calloc(1, sizeof(struct meminfo));
@@ -186,15 +189,22 @@ int main(int argc, char *argv[])
             print_procmem(minfo);
             print_meminfo(minfo->item);
 
-            if (leak)
+            if (leak) {
                 hash_insert(minfo);
+                count++;
+            }
             clear_minfo(minfo);
         }
 
-        if (leak)
+        if (leak) {
             detect_leak();
-        if (time > 0)
+            if (!count % SHRINK_SIZE)
+                hash_shrink();
+        }
+        if (time > 0) {
+            printf("---------------------------------------------------------\n");
             sleep(time);
+        }
     } while(time);
 
     return 0;

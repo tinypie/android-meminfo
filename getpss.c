@@ -441,7 +441,7 @@ void print_procmem(struct meminfo *meminfo)
     qsort(meminfo->pss, meminfo->num_procs, sizeof(meminfo->pss[0]), cmppss);
 
     printf("Total PSS by process");
-    printf("(%d-%d-%d %d:%d:%d):\n", tm->tm_year + 1900, tm->tm_mon + 1,
+    printf("(%02d-%02d-%02d %02d:%02d:%02d):\n", tm->tm_year + 1900, tm->tm_mon + 1,
             tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
 
     for (i = 0; i < meminfo->num_procs; i++) {

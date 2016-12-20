@@ -2,7 +2,8 @@
 #define MEMINFO_HASH_H
 
 #define HASH_SIZE 200
-#define GAP_SIZE 100
+#define GAP_SIZE 50
+#define SHRINK_SIZE 60*4
 
 #include "getpss.h"
 
@@ -10,8 +11,6 @@ struct proc {
     struct proc *next;
     int pid;
     int pss;
-//   int native_heap;
-//   int dalvik_heap;
 };
 
 struct hash {
