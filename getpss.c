@@ -3,6 +3,7 @@
 #include <dirent.h>
 #include <stdint.h>
 #include <string.h>
+#include <inttypes.h>
 
 #include <errno.h>
 #include <ctype.h>
@@ -104,7 +105,8 @@ static void read_mapinfo(FILE *fp, struct stats_t *stats)
     unsigned referenced = 0;
     unsigned temp;
 
-    unsigned long int start, end;
+    uint64_t start;
+    uint64_t end = 0;
     uint64_t prevEnd = 0;
     char* name;
     int name_pos;
@@ -125,8 +127,8 @@ static void read_mapinfo(FILE *fp, struct stats_t *stats)
         if (len < 1) return;
         line[--len] = 0;
 
-        //if (sscanf(line, "%"SCNx64 "-%"SCNx64 " %*s %*x %*x:%*x %*d%n", &start, &end, &name_pos) != 2) {
-        if (sscanf(line, "%lx-%lx %*s %*x %*x:%*x %*d%n", &start, &end, &name_pos) != 2) {
+        if (sscanf(line, "%"SCNx64 "-%"SCNx64 " %*s %*x %*x:%*x %*d%n", &start, &end, &name_pos) != 2) {
+        //if (sscanf(line, "%lx-%lx %*s %*x %*x:%*x %*d%n", &start, &end, &name_pos) != 2) {
             skip = 1;
         } else {
             while (isspace(line[name_pos])) {
@@ -228,8 +230,8 @@ static void read_mapinfo(FILE *fp, struct stats_t *stats)
                 referenced = temp;
             }
 
-           // else if (sscanf(line, "%" SCNx64 "-%" SCNx64 " %*s %*x %*x:%*x %*d", &start, &end) == 2) {
-            if (strlen(line) > 30 && line[8] == '-' && line[17] == ' ') {
+            else if (sscanf(line, "%" SCNx64 "-%" SCNx64 " %*s %*x %*x:%*x %*d", &start, &end) == 2) {
+            //if (strlen(line) > 30 && line[8] == '-' && line[17] == ' ') {
                 // looks like a new mapping
                 // example: "10000000-10001000 ---p 10000000 00:00 0"
                 break;
