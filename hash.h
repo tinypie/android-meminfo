@@ -3,7 +3,7 @@
 
 #define HASH_SIZE 200
 #define GAP_SIZE 50
-#define SHRINK_SIZE 60*4
+#define SHRINK_SIZE (60*6)
 
 #include "getpss.h"
 

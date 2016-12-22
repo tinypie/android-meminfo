@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
 
         if (leak) {
             detect_leak();
-            if (!count % SHRINK_SIZE)
+            if (!(count % SHRINK_SIZE))
                 hash_shrink();
         }
         if (time > 0) {
