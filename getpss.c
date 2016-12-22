@@ -128,7 +128,6 @@ static void read_mapinfo(FILE *fp, struct stats_t *stats)
         line[--len] = 0;
 
         if (sscanf(line, "%"SCNx64 "-%"SCNx64 " %*s %*x %*x:%*x %*d%n", &start, &end, &name_pos) != 2) {
-        //if (sscanf(line, "%lx-%lx %*s %*x %*x:%*x %*d%n", &start, &end, &name_pos) != 2) {
             skip = 1;
         } else {
             while (isspace(line[name_pos])) {
@@ -228,10 +227,7 @@ static void read_mapinfo(FILE *fp, struct stats_t *stats)
                 private_dirty = temp;
             } else if (line[0] == 'R' && sscanf(line, "Referenced: %d kB", &temp) == 1) {
                 referenced = temp;
-            }
-
-            else if (sscanf(line, "%" SCNx64 "-%" SCNx64 " %*s %*x %*x:%*x %*d", &start, &end) == 2) {
-            //if (strlen(line) > 30 && line[8] == '-' && line[17] == ' ') {
+            } else if (sscanf(line, "%" SCNx64 "-%" SCNx64 " %*s %*x %*x:%*x %*d", &start, &end) == 2) {
                 // looks like a new mapping
                 // example: "10000000-10001000 ---p 10000000 00:00 0"
                 break;
@@ -249,10 +245,7 @@ static void read_mapinfo(FILE *fp, struct stats_t *stats)
             } else
                 swappable_pss = 0;
 
-            if (whichHeap == HEAP_GL)
-                stats[whichHeap].pss += size;
-            else
-                stats[whichHeap].pss += pss;
+            stats[whichHeap].pss += pss;
 
             stats[whichHeap].privateDirty += private_dirty;
             stats[whichHeap].sharedDirty += shared_dirty;
@@ -498,9 +491,6 @@ int get_procmem(struct meminfo *meminfo)
     }
 
     stat_procmem(meminfo);
-
-    if (meminfo->item[MEMINFO_GPU_USED].num == 0)
-        meminfo->item[MEMINFO_GPU_USED].num = meminfo->pss_detail[HEAP_GL].num;
 
     return 0;
 }

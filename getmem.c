@@ -160,23 +160,41 @@ int get_gpu_mem(int *gpu)
     FILE *gpu_fd;
     char line[1024];
 
-    int gpu_size;
+    int gpu_size, flag = 0;
 
     if ((gpu_fd = fopen(GL_MEM, "r")) == NULL) {
-        err_msg("open file %s error %s", GL_MEM, strerror(errno));
-        return -errno;
+        //err_msg("open file %s error %s", GL_MEM, strerror(errno));
+        flag = 1;
+        if ((gpu_fd = fopen(GL_MEMTX, "r")) == NULL) {
+            err_msg("open file %s error %s", GL_MEMTX, strerror(errno));
+            return -errno;
+        }
     }
 
     while(fgets(line, sizeof(line), gpu_fd) != NULL) {
-        // Mali mem usage: 42856448
-        if (sscanf(line, "Mali mem usage: %d", &gpu_size) != 1)
-            continue;
-        else
-            break;
+        if (flag == 0) {
+            // mali450 (in bytes)
+            // Mali mem usage: 42856448
+            if (sscanf(line, "Mali mem usage: %d", &gpu_size) != 1)
+                continue;
+            else
+                break;
+        } else if (flag == 1) {
+            // mali t82x t83x (in pages)
+            // mali0                  12282
+            if (sscanf(line, "%*s%d", &gpu_size) != 1)
+                continue;
+            else
+                break;
+        }
     }
 
     fclose(gpu_fd);
-    *gpu = gpu_size/1024;
+    if (flag == 0)
+        *gpu = gpu_size/1024;
+    else if (flag == 1)
+        *gpu = gpu_size * 4;
+
     return 0;
 }
 
@@ -270,6 +288,7 @@ static int get_vmalloc_mem(int *vmalloc)
             while (*p >= '0' && *p <= '9') p++;
             if (*p != 0)
                 *p = 0;
+            // convert to KB
             vmalloc_size += atoi(num) * 4;
         } else if (strstr(line, "vmap")) {
             if(sscanf(line, "%*s%d%*s%*s", &vmap_size) == 1)
