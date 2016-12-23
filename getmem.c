@@ -296,6 +296,7 @@ static int get_vmalloc_mem(int *vmalloc)
         }
     }
 
+    fclose(vmalloc_fd);
     *vmalloc = vmalloc_size;
     return 0;
 }
