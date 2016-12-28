@@ -246,8 +246,9 @@ static int get_codec_mem_scatter(int *codec)
     }
 
     while(fgets(line, sizeof(line), codec_fd) != NULL) {
-        if ((p=strstr(line, "total size:"))) {
-            p += sizeof("total size");
+        // alloc from sys pages cnt:
+        if ((p=strstr(line, "alloc from sys pages cnt:"))) {
+            p += sizeof("alloc from sys pages cnt");
 
             while (*p == ' ') p++;
             char* num = p;
@@ -257,7 +258,19 @@ static int get_codec_mem_scatter(int *codec)
                 p++;
             }
             codec_size = atoi(num);
-            total += codec_size * 1024;
+            total += codec_size * 4;
+        } else if ((p=strstr(line, "one_page_cnt:"))) {
+            p += sizeof("one_page_cnt");
+
+            while (*p == ' ') p++;
+            char* num = p;
+            while (*p >= '0' && *p <= '9') p++;
+            if (*p != 0) {
+                *p = 0;
+                p++;
+            }
+            codec_size = atoi(num);
+            total += codec_size * 4;
         }
     }
 
