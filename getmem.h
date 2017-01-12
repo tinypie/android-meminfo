@@ -12,6 +12,7 @@
 #define GL_MEMTX "/sys/kernel/debug/mali0/gpu_memory"
 #define CODEC_MEM "/sys/class/codec_mm/codec_mm_dump"
 #define CODEC_MEM_SCATTER "/sys/class/codec_mm/codec_mm_scatter_dump"
+#define PAGETYPE "/proc/pagetypeinfo"
 #else
 #define PROC_MEMINFO "test/meminfo"
 //#define VMALLOC_INFO "test/1.txt"
@@ -22,6 +23,7 @@
 #define GL_MEM "test/gpu_memory"
 #define CODEC_MEM "test/codec_mm_dump"
 #define CODEC_MEM_SCATTER "test/codec_mm_scatter_dump"
+#define PAGETYPE "test/pagetypeinfo"
 #endif
 
 int get_mem(struct meminfo *mem);

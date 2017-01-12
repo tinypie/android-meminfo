@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include <unistd.h>
 #include <fcntl.h>	/* for open etc. system call */
@@ -32,6 +33,8 @@ static int get_meminfo(struct mem_item *mem)
         "PageTables:",
         "KernelStack:",
         "VmallocUsed:",
+        "TotalCMA:",
+        "UsedCMA:",
         NULL
     };
 
@@ -51,10 +54,12 @@ static int get_meminfo(struct mem_item *mem)
         11,
         12,
         12,
+        9,
+        8,
         0
     };
 
-    char buffer[1024];
+    char buffer[1536];
     int num_found = 0;
 
     int fd = open(PROC_MEMINFO, O_RDONLY);
@@ -73,7 +78,7 @@ static int get_meminfo(struct mem_item *mem)
     if (p == NULL)
         err_quit("input file is not /proc/meminfo\n");
 
-    while (*p && num_found < 15) {
+    while (*p && num_found < 17) {
         int i = 0;
         while (tags[i]) {
             if (strncmp(p, tags[i], tagsLen[i]) == 0) {
@@ -304,6 +309,9 @@ static int get_vmalloc_mem(int *vmalloc)
             // convert to KB
             vmalloc_size += atoi(num) * 4;
         } else if (strstr(line, "vmap")) {
+            // skip ion vmap
+            if (strstr(line, "ion"))
+                continue;
             if(sscanf(line, "%*s%d%*s%*s", &vmap_size) == 1)
                 vmalloc_size += vmap_size/1024;
         }
@@ -311,6 +319,39 @@ static int get_vmalloc_mem(int *vmalloc)
 
     fclose(vmalloc_fd);
     *vmalloc = vmalloc_size;
+    return 0;
+}
+
+static int get_cma_mem(int *cma)
+{
+    FILE *file;
+    char line[1024], *p;
+
+    int cma_free = 0, flag = 0;
+
+    if ((file = fopen(PAGETYPE, "r")) == NULL) {
+        err_msg("open file %s error %s", PAGETYPE, strerror(errno));
+        return -1;
+    }
+
+    while (fgets(line, sizeof(line), file) != NULL) {
+        if (flag == 0 && strstr(line, "total")) {
+            flag = 1;
+            continue;
+        } else if ((strstr(line, "CMA"))) {
+            if (flag == 1)
+                if((p=strrchr(line, ' '))) {
+                    p++;
+                    if (isdigit(*p)) {
+                        cma_free = atoi(p) * 4;
+                        break;
+                    }
+                }
+        }
+    }
+
+    fclose(file);
+    *cma = cma_free;
     return 0;
 }
 
@@ -335,8 +376,11 @@ int print_meminfo(struct mem_item *mem)
     free_ram = kernel_cached + mem[MEMINFO_FREE].num;
     printf("%15s%7d KB\n", "Free Ram:", free_ram);
     printf("             +---");
-    printf("%15s%7d KB\n", mem[MEMINFO_FREE].name, mem[MEMINFO_FREE].num);
-    printf("             |---");
+    printf("%15s%7d KB", mem[MEMINFO_FREE].name, mem[MEMINFO_FREE].num);
+    if (mem[MEMINFO_FREE_CMA].num)
+        printf(" (free cma:%d KB)", mem[MEMINFO_FREE_CMA].num);
+
+    printf("\n             |---");
     printf("%15s%7d KB\n", "Kernel cached:", kernel_cached);
 
     ion = mem[MEMINFO_ION].num + mem[MEMINFO_ION_BUFFER].num;
@@ -378,6 +422,9 @@ int print_meminfo(struct mem_item *mem)
     printf("             |---");
     printf("%15s%7d KB\n", "unknown:", unknown);
 
+    printf("\ncma memory information:\n");
+    printf("%15s%d KB %15s%d KB\n", "Total CMA:", mem[MEMINFO_TOTAL_CMA].num,
+            "driver used:", mem[MEMINFO_DUSED_CMA].num);
 
     return 0;
 }
@@ -404,6 +451,9 @@ int get_mem(struct meminfo *mem)
     get_codec_mem(&(mem->item[MEMINFO_CODEC_USED].num));
     get_codec_mem_scatter(&codec_scatter);
     mem->item[MEMINFO_CODEC_USED].num += codec_scatter;
+
+    //get cma information
+    get_cma_mem(&(mem->item[MEMINFO_FREE_CMA].num));
 
     return 0;
 }

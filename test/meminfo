@@ -33,4 +33,6 @@ Committed_AS:   24561388 kB
 VmallocTotal:    1048576 kB
 VmallocUsed:       80872 kB
 VmallocChunk:     905044 kB
+TotalCMA:         139264 kB
+UsedCMA:            3088 kB
 
